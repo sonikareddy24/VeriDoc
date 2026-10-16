@@ -1,4 +1,15 @@
-import { ShieldCheck, MapPin, Search, Layers } from 'lucide-react';
+import { useState } from 'react';
+import {
+  ShieldCheck,
+  MapPin,
+  Search,
+  Layers,
+  Copy,
+  Check,
+  Code2,
+  FileText,
+  AlertTriangle,
+} from 'lucide-react';
 import { ExtractedField, EvidenceToken } from '../types';
 
 interface EvidenceViewerProps {
@@ -8,13 +19,18 @@ interface EvidenceViewerProps {
 }
 
 export default function EvidenceViewer({ fieldName, field, evidenceTokens }: EvidenceViewerProps) {
+  const [copied, setCopied] = useState(false);
+  const [showJson, setShowJson] = useState(false);
+
   if (!fieldName || !field) {
     return (
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 flex flex-col items-center justify-center text-center text-slate-500 h-full min-h-[320px]">
-        <Search className="w-10 h-10 mb-3 text-slate-600" />
-        <h4 className="text-sm font-semibold text-slate-300">Evidence Grounding Inspector</h4>
-        <p className="text-xs text-slate-500 max-w-xs mt-1">
-          Select any extracted field in the table to examine its independent OCR grounding, bounding coordinates, and confidence.
+      <div className="bg-[#0b1120]/90 backdrop-blur-md border border-slate-800/80 rounded-2xl p-8 flex flex-col items-center justify-center text-center text-slate-500 h-full min-h-[360px] shadow-2xl">
+        <div className="p-3 bg-slate-900 border border-slate-800 rounded-2xl mb-3 text-slate-600">
+          <Search className="w-8 h-8" />
+        </div>
+        <h4 className="text-sm font-bold text-slate-200">Evidence Grounding Inspector</h4>
+        <p className="text-xs text-slate-400 max-w-xs mt-1.5 leading-relaxed">
+          Select any field in the table or click a bounding box on the document canvas to inspect independent tokens &amp; audit rationale.
         </p>
       </div>
     );
@@ -28,114 +44,157 @@ export default function EvidenceViewer({ fieldName, field, evidenceTokens }: Evi
     return token.includes(target) || target.includes(token);
   });
 
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1800);
+  };
+
+  const isSupported = field.status === 'Supported';
+  const isInconsistent = field.status === 'Inconsistent';
+  const isUncertain = field.status === 'Uncertain';
+
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col space-y-4 shadow-xl">
-      <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-        <div className="flex items-center space-x-2">
-          <div className="p-1.5 bg-sky-500/10 border border-sky-500/30 rounded-lg text-sky-400">
+    <div className="bg-[#0b1120]/90 backdrop-blur-md border border-slate-800/80 rounded-2xl p-5 flex flex-col space-y-4 shadow-2xl">
+      {/* Inspector Header */}
+      <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+        <div className="flex items-center space-x-2.5">
+          <div className="p-2 bg-sky-500/10 border border-sky-500/30 rounded-xl text-sky-400">
             <ShieldCheck className="w-4 h-4" />
           </div>
           <div>
-            <h4 className="text-xs font-semibold text-white capitalize">{fieldName.replace(/_/g, ' ')}</h4>
-            <span className="text-[10px] text-slate-400 font-mono">Evidence Inspection</span>
+            <h4 className="text-sm font-bold text-white capitalize">{fieldName.replace(/_/g, ' ')}</h4>
+            <span className="text-[10px] text-slate-400 font-mono">Independent Grounding Inspector</span>
           </div>
         </div>
-        <span
-          className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
-            field.status === 'Supported'
-              ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
-              : field.status === 'Inconsistent'
-              ? 'bg-rose-500/10 text-rose-400 border border-rose-500/30'
-              : 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
-          }`}
-        >
-          {field.status}
-        </span>
-      </div>
 
-      {/* Value & Normalized Value */}
-      <div className="grid grid-cols-2 gap-3 text-xs bg-slate-950/60 p-3 rounded-lg border border-slate-800/80 font-mono">
-        <div>
-          <span className="text-slate-500 block text-[10px]">Raw Extracted:</span>
-          <span className="text-slate-200 font-medium truncate block">{String(field.value ?? 'null')}</span>
-        </div>
-        <div>
-          <span className="text-slate-500 block text-[10px]">Normalized Value:</span>
-          <span className="text-sky-400 font-bold truncate block">{String(field.normalized_value ?? 'null')}</span>
-        </div>
-      </div>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => setShowJson(!showJson)}
+            className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 text-xs flex items-center space-x-1"
+            title="Toggle JSON Schema View"
+          >
+            <Code2 className="w-3.5 h-3.5" />
+          </button>
 
-      {/* Explanation */}
-      <div className="text-xs bg-slate-800/40 p-3 rounded-lg border border-slate-800">
-        <span className="text-slate-400 font-semibold block text-[11px] mb-1">Status Explanation:</span>
-        <p className="text-slate-300 text-[11px] leading-relaxed">
-          {field.status_reason || 'Verified through independent evidence token grounding and deterministic validation.'}
-        </p>
-      </div>
-
-      {/* Visual Spatial Box Overlay */}
-      {bbox && (
-        <div className="border border-slate-800 rounded-lg p-3 bg-slate-950/80 flex flex-col items-center">
-          <div className="w-full flex items-center justify-between text-[11px] text-slate-400 mb-2">
-            <span className="flex items-center space-x-1">
-              <MapPin className="w-3.5 h-3.5 text-sky-400" />
-              <span>Spatial BBox Location (Page {field.page || 1}):</span>
-            </span>
-            <span className="font-mono text-[10px] text-sky-400">
-              [{bbox.map((v) => v.toFixed(3)).join(', ')}]
-            </span>
-          </div>
-
-          {/* Miniature Document Canvas Simulation */}
-          <div className="relative w-full h-36 bg-slate-900 border border-slate-700/80 rounded shadow-inner overflow-hidden flex items-center justify-center">
-            <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#94a3b8_1px,transparent_1px)] [background-size:12px_12px]" />
-            <div
-              className="absolute border-2 border-sky-400 bg-sky-500/25 rounded-sm transition-all animate-pulse"
-              style={{
-                left: `${bbox[0] * 100}%`,
-                top: `${bbox[1] * 100}%`,
-                width: `${Math.max(6, (bbox[2] - bbox[0]) * 100)}%`,
-                height: `${Math.max(4, (bbox[3] - bbox[1]) * 100)}%`,
-              }}
-            >
-              <span className="absolute -top-3 left-0 text-[8px] bg-sky-500 text-slate-950 font-bold px-1 rounded-xs">
-                {fieldName}
-              </span>
-            </div>
-            <span className="text-[10px] text-slate-600 font-mono">Page {field.page || 1} Canvas View</span>
-          </div>
-        </div>
-      )}
-
-      {/* Independent Grounding Tokens */}
-      <div className="space-y-1.5">
-        <div className="flex items-center justify-between text-xs text-slate-400">
-          <span className="flex items-center space-x-1">
-            <Layers className="w-3.5 h-3.5 text-indigo-400" />
-            <span className="font-semibold text-[11px]">Matched Evidence Tokens ({matchedTokens.length})</span>
+          <span
+            className={`text-[10px] px-2.5 py-0.5 rounded-full font-semibold uppercase tracking-wider ${
+              isSupported
+                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
+                : isInconsistent
+                ? 'bg-rose-500/10 text-rose-400 border border-rose-500/30'
+                : 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
+            }`}
+          >
+            {field.status}
           </span>
         </div>
-
-        {matchedTokens.length > 0 ? (
-          <div className="space-y-1 max-h-28 overflow-y-auto pr-1">
-            {matchedTokens.map((t, idx) => (
-              <div
-                key={idx}
-                className="text-[11px] font-mono bg-slate-950 p-2 rounded border border-slate-800 flex items-center justify-between text-slate-300"
-              >
-                <span className="truncate max-w-[180px]">&quot;{t.text}&quot;</span>
-                <span className="text-[10px] text-indigo-400 uppercase bg-indigo-500/10 px-1.5 py-0.5 rounded border border-indigo-500/20">
-                  {t.source}
-                </span>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-[11px] text-slate-500 italic bg-slate-950/40 p-2 rounded border border-slate-800/60">
-            No exact matching independent tokens found in secondary layers.
-          </div>
-        )}
       </div>
+
+      {showJson ? (
+        <pre className="bg-[#060913] p-3 rounded-xl border border-slate-800 text-[11px] font-mono text-sky-300 overflow-x-auto max-h-56">
+          {JSON.stringify(field, null, 2)}
+        </pre>
+      ) : (
+        <>
+          {/* Values Grid */}
+          <div className="grid grid-cols-2 gap-3 text-xs bg-[#070b14]/90 p-3 rounded-xl border border-slate-800/80 font-mono relative">
+            <div>
+              <span className="text-slate-500 block text-[10px] font-sans font-medium uppercase tracking-wider">
+                Raw Extracted:
+              </span>
+              <span className="text-slate-200 font-medium truncate block mt-0.5">
+                {String(field.value ?? 'null')}
+              </span>
+            </div>
+            <div>
+              <span className="text-slate-500 block text-[10px] font-sans font-medium uppercase tracking-wider">
+                Normalized Value:
+              </span>
+              <span className="text-sky-400 font-bold truncate block mt-0.5">
+                {String(field.normalized_value ?? 'null')}
+              </span>
+            </div>
+            <button
+              onClick={() => handleCopy(String(field.normalized_value ?? field.value))}
+              className="absolute top-2 right-2 p-1 text-slate-500 hover:text-slate-300"
+              title="Copy normalized value"
+            >
+              {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+            </button>
+          </div>
+
+          {/* Audit Explanation */}
+          <div className="text-xs bg-[#0d1629]/60 p-3 rounded-xl border border-slate-800/70 space-y-1">
+            <div className="flex items-center justify-between text-[11px]">
+              <span className="text-slate-400 font-semibold flex items-center space-x-1">
+                <FileText className="w-3.5 h-3.5 text-sky-400" />
+                <span>Deterministic Audit Rationale:</span>
+              </span>
+              {isUncertain && (
+                <span className="inline-flex items-center space-x-1 text-[10px] text-amber-400 bg-amber-500/10 px-1.5 py-0.2 rounded border border-amber-500/20 font-medium">
+                  <AlertTriangle className="w-3 h-3" />
+                  <span>Same-Source Only</span>
+                </span>
+              )}
+            </div>
+            <p className="text-slate-300 text-[11px] leading-relaxed pt-0.5">
+              {field.status_reason ||
+                'Grounded in independent evidence and verified against deterministic accounting invariants.'}
+            </p>
+          </div>
+
+          {/* Spatial Coordinates Pill */}
+          {bbox && (
+            <div className="flex items-center justify-between text-[11px] bg-[#070b14]/70 px-3 py-2 rounded-lg border border-slate-800/80">
+              <span className="flex items-center space-x-1 text-slate-400 font-medium">
+                <MapPin className="w-3.5 h-3.5 text-sky-400" />
+                <span>Page {field.page || 1} Coordinates:</span>
+              </span>
+              <span className="font-mono text-[10px] text-sky-400 font-semibold bg-sky-500/10 px-2 py-0.5 rounded border border-sky-500/20">
+                [{bbox.map((v) => v.toFixed(3)).join(', ')}]
+              </span>
+            </div>
+          )}
+
+          {/* Evidence Tokens */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-xs text-slate-400">
+              <span className="flex items-center space-x-1.5 font-semibold text-[11px] text-slate-300">
+                <Layers className="w-3.5 h-3.5 text-indigo-400" />
+                <span>Independent Tokens Found ({matchedTokens.length})</span>
+              </span>
+            </div>
+
+            {matchedTokens.length > 0 ? (
+              <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
+                {matchedTokens.map((t, idx) => (
+                  <div
+                    key={idx}
+                    className="text-[11px] font-mono bg-[#070b14] p-2.5 rounded-lg border border-slate-800/80 flex items-center justify-between text-slate-200"
+                  >
+                    <span className="truncate max-w-[200px] text-slate-300">&quot;{t.text}&quot;</span>
+                    <div className="flex items-center space-x-1.5">
+                      {t.confidence !== undefined && (
+                        <span className="text-[10px] text-slate-400 font-mono">
+                          {(t.confidence * 100).toFixed(0)}%
+                        </span>
+                      )}
+                      <span className="text-[9px] text-indigo-400 uppercase font-semibold bg-indigo-500/10 px-1.5 py-0.5 rounded border border-indigo-500/20">
+                        {t.source}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-[11px] text-slate-500 italic bg-[#070b14]/50 p-2.5 rounded-lg border border-slate-800/60">
+                No secondary token confirmations located on digital vector layers.
+              </div>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }

@@ -229,3 +229,24 @@ def run_demo_session():
 
     # 3. Analyze through real pipeline
     return analyze_session(session.session_id)
+
+
+@router.get("/sessions/{session_id}/documents/{doc_id}/pages/{page_num}/image")
+def get_document_page_image(session_id: str, doc_id: str, page_num: int = 1):
+    session = session_manager.get_session(session_id)
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found or expired.")
+
+    img_path = session.storage_dir / f"{doc_id}_page_{page_num}.png"
+    if not img_path.exists():
+        # Fallback to checking if document itself is an image
+        doc_meta = session.documents.get(doc_id)
+        if doc_meta and doc_meta.content_type in ("image/png", "image/jpeg"):
+            img_path = Path(doc_meta.stored_path)
+        else:
+            raise HTTPException(status_code=404, detail=f"Page {page_num} image not found.")
+
+    with open(img_path, "rb") as f:
+        img_bytes = f.read()
+    mime = "image/jpeg" if img_path.suffix.lower() in (".jpg", ".jpeg") else "image/png"
+    return Response(content=img_bytes, media_type=mime)

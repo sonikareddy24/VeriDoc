@@ -40,7 +40,9 @@ class OCRRulesExtractor(BaseExtractor):
         start_time = time.perf_counter()
 
         # 1. OCR Token and Image Extraction
-        page_images, tokens, warnings = ocr_engine.render_and_extract_tokens(file_path, mime_type)
+        page_images, tokens, warnings = ocr_engine.render_and_extract_tokens(
+            file_path, mime_type, save_dir=Path(file_path).parent, doc_id=doc_id
+        )
         page_count = max(1, len(page_images))
 
         # 2. Quality Report

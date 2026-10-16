@@ -6,21 +6,33 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+      },
       colors: {
-        brand: {
-          50: '#f0f7ff',
-          100: '#e0effe',
-          200: '#bae0fd',
-          500: '#0284c7',
-          600: '#0369a1',
-          700: '#075985',
-          900: '#0c4a6e',
+        dark: {
+          950: '#060913',
+          900: '#0b1120',
+          850: '#0f172a',
+          800: '#162238',
+          750: '#1e2e4a',
         },
-        slate: {
-          850: '#151e2e',
-          950: '#070d18',
-        }
-      }
+        brand: {
+          50: '#f0f9ff',
+          100: '#e0f2fe',
+          200: '#bae6fd',
+          400: '#38bdf8',
+          500: '#0ea5e9',
+          600: '#0284c7',
+          700: '#0369a1',
+        },
+      },
+      boxShadow: {
+        'glow-sky': '0 0 25px -5px rgba(14, 165, 233, 0.25)',
+        'glow-emerald': '0 0 25px -5px rgba(16, 185, 129, 0.25)',
+        'glow-rose': '0 0 25px -5px rgba(244, 63, 94, 0.25)',
+      },
     },
   },
   plugins: [],

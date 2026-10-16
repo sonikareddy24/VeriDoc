@@ -22,7 +22,11 @@ class OCREngine:
         self._rapid_ocr = RapidOCR()
 
     def render_and_extract_tokens(
-        self, file_path: str, mime_type: str
+        self,
+        file_path: str,
+        mime_type: str,
+        save_dir: Optional[Path] = None,
+        doc_id: Optional[str] = None,
     ) -> Tuple[List[np.ndarray], List[EvidenceToken], List[str]]:
         """Renders pages to images and extracts all OCR and digital tokens with normalized bounding boxes.
 
@@ -48,6 +52,10 @@ class OCREngine:
                 deskewed_bgr, q_report = assess_and_deskew_image(img_bgr)
                 page_images.append(deskewed_bgr)
                 warnings.extend(q_report.warnings)
+
+                if save_dir and doc_id:
+                    page_file = save_dir / f"{doc_id}_page_{page_idx + 1}.png"
+                    cv2.imwrite(str(page_file), deskewed_bgr)
 
             # 2. Extract digital text layer using pdfplumber if present
             try:
@@ -83,6 +91,8 @@ class OCREngine:
             deskewed_bgr, q_report = assess_and_deskew_image(img_bgr)
             page_images.append(deskewed_bgr)
             warnings.extend(q_report.warnings)
+            if save_dir and doc_id:
+                cv2.imwrite(str(save_dir / f"{doc_id}_page_1.png"), deskewed_bgr)
 
         # 3. Run RapidOCR on each page image
         for page_idx, img_bgr in enumerate(page_images, start=1):
