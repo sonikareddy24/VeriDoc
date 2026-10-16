@@ -1,0 +1,13 @@
+{
+  "filename": "bank_seen_1_layout1.pdf",
+  "split": "seen",
+  "layout_id": 1,
+  "doc_type": "bank_statement",
+  "entity_id": "entity_1",
+  "is_inconsistent": false,
+  "fields": {
+    "account_holder_name": "Aryan Maharaj",
+    "opening_balance": 20000.0,
+    "closing_balance": 76000.0
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "filename": "payslip_seen_1_layout1.pdf",
+  "split": "seen",
+  "layout_id": 1,
+  "doc_type": "payslip",
+  "entity_id": "entity_1",
+  "is_inconsistent": false,
+  "fields": {
+    "employee_name": "Aryan Maharaj",
+    "employee_id": "EMP-1001",
+    "employer_name": "Kapoor and Sons Technologies Ltd",
+    "basic_salary": 45000.0,
+    "gross_salary": 67000.0,
+    "net_salary": 60500.0,
+    "payment_date": "2024-03-31"
+  }
+}

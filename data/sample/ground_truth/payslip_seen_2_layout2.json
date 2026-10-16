@@ -1,0 +1,17 @@
+{
+  "filename": "payslip_seen_2_layout2.pdf",
+  "split": "seen",
+  "layout_id": 2,
+  "doc_type": "payslip",
+  "entity_id": "entity_2",
+  "is_inconsistent": false,
+  "fields": {
+    "employee_name": "Gagan Sami",
+    "employee_id": "EMP-1002",
+    "employer_name": "Balan Inc Technologies Ltd",
+    "basic_salary": 50000.0,
+    "gross_salary": 74000.0,
+    "net_salary": 67000.0,
+    "payment_date": "2024-03-31"
+  }
+}

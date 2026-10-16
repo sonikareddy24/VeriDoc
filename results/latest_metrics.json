@@ -1,0 +1,17 @@
+{
+  "p0_acc": "100.0%",
+  "p0_undetected": "31.2%",
+  "p1_acc": "75.0%",
+  "p1_undetected": "31.2%",
+  "p1_coverage": "75.0%",
+  "p1_f1": "0.25",
+  "p2_acc": "75.0%",
+  "p2_undetected": "31.2%",
+  "p2_coverage": "75.0%",
+  "p2_f1": "0.25",
+  "p2_undetected_error_rate": "31.2%",
+  "error_reduction_pct": "-0.0%",
+  "seeded_f1": "0.25",
+  "seeded_recall": "0.50",
+  "benign_false_positive_rate": "83.3%"
+}

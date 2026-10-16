@@ -1,0 +1,13 @@
+{
+  "filename": "bank_seen_2_layout2.pdf",
+  "split": "seen",
+  "layout_id": 2,
+  "doc_type": "bank_statement",
+  "entity_id": "entity_2",
+  "is_inconsistent": false,
+  "fields": {
+    "account_holder_name": "Gagan Sami",
+    "opening_balance": 20000.0,
+    "closing_balance": 82500.0
+  }
+}

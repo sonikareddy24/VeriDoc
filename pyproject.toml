@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "veridocs-ai"
+version = "0.1.0"
+description = "Evidence-First Financial Document Intelligence and Fraud-Consistency Checker"
+readme = "README.md"
+requires-python = ">=3.10,<3.13"
+license = { text = "MIT" }
+authors = [{ name = "VeriDocs Research Team" }]
+dependencies = [
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.29.0",
+    "pydantic>=2.6.0",
+    "pydantic-settings>=2.2.0",
+    "python-multipart>=0.0.9",
+    "pypdfium2>=4.30.0",
+    "pdfplumber>=0.11.0",
+    "rapidocr-onnxruntime>=1.3.0",
+    "onnxruntime>=1.17.0",
+    "pillow>=10.2.0",
+    "opencv-python-headless>=4.9.0",
+    "rapidfuzz>=3.6.0",
+    "reportlab>=4.1.0",
+    "faker>=24.0.0",
+    "numpy>=1.26.0",
+    "scipy>=1.12.0",
+    "matplotlib>=3.8.0",
+    "psutil>=5.9.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
+    "httpx>=0.27.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["backend/tests", "eval/tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"

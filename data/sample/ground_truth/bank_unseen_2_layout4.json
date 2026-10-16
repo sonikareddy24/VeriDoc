@@ -1,0 +1,14 @@
+{
+  "filename": "bank_unseen_2_layout4.pdf",
+  "split": "unseen",
+  "layout_id": 4,
+  "doc_type": "bank_statement",
+  "entity_id": "unseen_entity_2",
+  "is_inconsistent": true,
+  "tamper_label": "bank_running_balance_break",
+  "fields": {
+    "account_holder_name": "Saumya Mall",
+    "opening_balance": 20000.0,
+    "closing_balance": 97300.0
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "filename": "payslip_unseen_1_layout3.pdf",
+  "split": "unseen",
+  "layout_id": 3,
+  "doc_type": "payslip",
+  "entity_id": "unseen_entity_1",
+  "is_inconsistent": true,
+  "tamper_label": "net_pay_arithmetic_mismatch",
+  "fields": {
+    "employee_name": "Viraj Tiwari",
+    "employee_id": "EMP-5001",
+    "employer_name": "Bala, Issac and Saini Solutions",
+    "basic_salary": 54000.0,
+    "gross_salary": 80000.0,
+    "net_salary": 77400.0,
+    "payment_date": "2024-03-31"
+  }
+}
