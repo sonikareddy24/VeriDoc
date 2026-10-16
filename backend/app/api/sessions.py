@@ -239,10 +239,33 @@ def get_document_page_image(session_id: str, doc_id: str, page_num: int = 1):
 
     img_path = session.storage_dir / f"{doc_id}_page_{page_num}.png"
     if not img_path.exists():
-        # Fallback to checking if document itself is an image
         doc_meta = session.documents.get(doc_id)
-        if doc_meta and doc_meta.content_type in ("image/png", "image/jpeg"):
-            img_path = Path(doc_meta.stored_path)
+        if not doc_meta:
+            raise HTTPException(status_code=404, detail=f"Document {doc_id} not found in session.")
+        
+        stored_path = Path(doc_meta.stored_path)
+        if not stored_path.exists():
+            raise HTTPException(status_code=404, detail="Source document file not found on disk.")
+
+        if doc_meta.content_type == "application/pdf":
+            import pypdfium2 as pdfium
+            import cv2
+            import numpy as np
+            try:
+                pdf = pdfium.PdfDocument(stored_path)
+                if 1 <= page_num <= len(pdf):
+                    page = pdf[page_num - 1]
+                    bitmap = page.render(scale=2.77)
+                    pil_image = bitmap.to_pil()
+                    img_bgr = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
+                    cv2.imwrite(str(img_path), img_bgr)
+                else:
+                    raise HTTPException(status_code=404, detail=f"Page {page_num} out of bounds.")
+            except Exception as e:
+                logger.error(f"Failed to render PDF page on-the-fly: {e}")
+                raise HTTPException(status_code=500, detail=f"Failed to render document page: {e}")
+        elif doc_meta.content_type in ("image/png", "image/jpeg"):
+            img_path = stored_path
         else:
             raise HTTPException(status_code=404, detail=f"Page {page_num} image not found.")
 

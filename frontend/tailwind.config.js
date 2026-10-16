@@ -7,31 +7,26 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
-        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+        sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
       },
       colors: {
-        dark: {
-          950: '#060913',
-          900: '#0b1120',
-          850: '#0f172a',
-          800: '#162238',
-          750: '#1e2e4a',
+        surface: {
+          950: '#0B0F17',
+          900: '#111827',
+          850: '#161F30',
+          800: '#1E293B',
+          700: '#334155',
         },
-        brand: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          200: '#bae6fd',
-          400: '#38bdf8',
-          500: '#0ea5e9',
-          600: '#0284c7',
-          700: '#0369a1',
+        enterprise: {
+          50: '#eff6ff',
+          100: '#dbeafe',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+          800: '#1e40af',
+          900: '#1e3a8a',
         },
-      },
-      boxShadow: {
-        'glow-sky': '0 0 25px -5px rgba(14, 165, 233, 0.25)',
-        'glow-emerald': '0 0 25px -5px rgba(16, 185, 129, 0.25)',
-        'glow-rose': '0 0 25px -5px rgba(244, 63, 94, 0.25)',
       },
     },
   },

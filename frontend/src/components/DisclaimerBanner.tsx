@@ -1,19 +1,19 @@
-import { AlertTriangle, Info } from 'lucide-react';
+import { AlertCircle, ShieldAlert } from 'lucide-react';
 
 export default function DisclaimerBanner() {
   return (
-    <div className="bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-slate-900 border-y border-amber-500/20 px-4 py-2.5">
+    <div className="bg-[#121826] border-b border-slate-800/90 px-4 py-2">
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs">
-        <div className="flex items-center space-x-2 text-amber-300">
-          <AlertTriangle className="w-4 h-4 flex-shrink-0 text-amber-400" />
-          <span className="font-semibold tracking-wide uppercase text-[11px]">Research Prototype Disclaimer:</span>
-          <span className="text-amber-200/90 font-normal">
-            VeriDocs AI checks financial consistency via deterministic evidence. It is NOT an authenticity, forensics, or fraud verification system.
+        <div className="flex items-center space-x-2 text-slate-300">
+          <ShieldAlert className="w-4 h-4 flex-shrink-0 text-amber-500" />
+          <span className="font-semibold text-slate-200 uppercase tracking-wide text-[11px]">System Scope:</span>
+          <span className="text-slate-400 font-normal">
+            VeriDocs AI checks financial <strong className="text-slate-300 font-medium">consistency</strong> via deterministic arithmetic and independent OCR token evidence. It is a research prototype, not an authenticity or forensics verification system.
           </span>
         </div>
-        <div className="flex items-center space-x-1.5 text-slate-400 text-[11px] bg-slate-800/60 px-2.5 py-1 rounded border border-slate-700/50">
-          <Info className="w-3.5 h-3.5 text-sky-400" />
-          <span>Do not upload real sensitive financial documents.</span>
+        <div className="flex items-center space-x-1.5 text-slate-400 text-[11px] bg-[#1A2234] px-2.5 py-0.5 rounded border border-slate-700/60 font-mono">
+          <AlertCircle className="w-3.5 h-3.5 text-slate-400" />
+          <span>Local CPU operation • Zero external cloud calls</span>
         </div>
       </div>
     </div>

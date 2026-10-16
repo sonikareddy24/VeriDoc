@@ -6,7 +6,7 @@ import {
   Shield,
   Download,
   AlertCircle,
-  PlayCircle,
+  Play,
   Cpu,
   ArrowRight,
 } from 'lucide-react';
@@ -112,7 +112,6 @@ export default function App() {
       setSessionId(data.session_id);
       setAnalysis(data);
 
-      // Reconstruct document metadata list from result
       const docList: DocumentMetadata[] = Object.values(data.documents).map((d) => ({
         doc_id: d.doc_id,
         original_filename: d.filename,
@@ -126,7 +125,7 @@ export default function App() {
         setSelectedDocId(firstDocId);
       }
     } catch (err: any) {
-      setErrorMessage(err.message || 'Error running demo flow.');
+      setErrorMessage(err.message || 'Error running sample scenario.');
     } finally {
       setIsAnalyzing(false);
     }
@@ -153,7 +152,7 @@ export default function App() {
     activeDocResult && selectedField ? activeDocResult.fields[selectedField] || null : null;
 
   return (
-    <div className="min-h-screen bg-[#060913] text-slate-100 flex flex-col font-sans selection:bg-sky-500 selection:text-white">
+    <div className="min-h-screen bg-[#0B0F17] text-slate-200 flex flex-col font-sans">
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -167,14 +166,14 @@ export default function App() {
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {errorMessage && (
-          <div className="mb-6 p-4 bg-rose-500/10 border border-rose-500/30 rounded-2xl flex items-center justify-between text-xs text-rose-300 shadow-glow-rose">
-            <div className="flex items-center space-x-2.5">
-              <AlertCircle className="w-5 h-5 text-rose-400 flex-shrink-0" />
-              <span className="font-medium">{errorMessage}</span>
+          <div className="mb-6 p-3.5 bg-rose-950/40 border border-rose-800/60 rounded-xl flex items-center justify-between text-xs text-rose-300">
+            <div className="flex items-center space-x-2">
+              <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0" />
+              <span>{errorMessage}</span>
             </div>
             <button
               onClick={() => setErrorMessage(null)}
-              className="text-rose-400 hover:text-white font-bold ml-4 p-1"
+              className="text-rose-400 hover:text-white font-semibold ml-4 px-1"
             >
               ✕
             </button>
@@ -187,39 +186,39 @@ export default function App() {
           <div className="space-y-6">
             {/* Header summary when analyzed */}
             {analysis && (
-              <div className="bg-[#0b1120]/90 backdrop-blur-md border border-slate-800/80 rounded-2xl p-5 shadow-2xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-                <div className="flex items-center space-x-3.5">
-                  <div className="p-3 bg-gradient-to-tr from-emerald-500/20 to-teal-500/10 border border-emerald-500/30 rounded-2xl text-emerald-400 shadow-glow-emerald">
-                    <Shield className="w-6 h-6" />
+              <div className="bg-[#111827] border border-slate-800 rounded-xl p-4 shadow-sm flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-9 h-9 rounded-lg bg-slate-800 flex items-center justify-center text-slate-300">
+                    <Shield className="w-5 h-5 text-blue-400" />
                   </div>
                   <div>
                     <div className="flex items-center space-x-2">
-                      <h2 className="text-base font-bold text-white tracking-tight">Audit Session Ledger</h2>
-                      <span className="text-[10px] font-mono px-2 py-0.5 bg-slate-900 border border-slate-800 rounded-md text-slate-400">
+                      <h2 className="text-xs font-bold text-white tracking-tight">Audit Session Ledger</h2>
+                      <span className="text-[10px] font-mono px-2 py-0.5 bg-[#0B0F17] border border-slate-800 rounded text-slate-400">
                         {sessionId?.slice(0, 8)}...
                       </span>
                     </div>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-[11px] text-slate-400">
                       Independent OCR token grounding, deterministic arithmetic &amp; cross-checks complete
                     </p>
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-3">
-                  <div className="flex items-center space-x-2 px-3 py-1.5 bg-[#070b14] rounded-xl border border-slate-800/90 text-xs font-mono">
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <div className="flex items-center space-x-2 px-3 py-1 bg-[#0B0F17] rounded-lg border border-slate-800 text-xs font-mono">
                     <div className="flex items-center space-x-1">
                       <span className="text-emerald-400 font-bold">{analysis.summary.Supported || 0}</span>
-                      <span className="text-slate-500 text-[11px] font-sans">Supported</span>
+                      <span className="text-slate-400 text-[11px] font-sans">Supported</span>
                     </div>
                     <span className="text-slate-700">|</span>
                     <div className="flex items-center space-x-1">
                       <span className="text-rose-400 font-bold">{analysis.summary.Inconsistent || 0}</span>
-                      <span className="text-slate-500 text-[11px] font-sans">Inconsistent</span>
+                      <span className="text-slate-400 text-[11px] font-sans">Inconsistent</span>
                     </div>
                     <span className="text-slate-700">|</span>
                     <div className="flex items-center space-x-1">
                       <span className="text-amber-400 font-bold">{analysis.summary.Uncertain || 0}</span>
-                      <span className="text-slate-500 text-[11px] font-sans">Uncertain</span>
+                      <span className="text-slate-400 text-[11px] font-sans">Uncertain</span>
                     </div>
                   </div>
 
@@ -227,9 +226,9 @@ export default function App() {
                     href={`/api/sessions/${sessionId}/report.pdf`}
                     target="_blank"
                     rel="noreferrer"
-                    className="px-3.5 py-1.5 bg-slate-850 hover:bg-slate-800 border border-slate-700/80 rounded-xl text-xs font-semibold text-slate-200 transition-all flex items-center space-x-1.5 shadow-sm hover:border-sky-500/30"
+                    className="px-3 py-1.5 bg-[#161F30] hover:bg-slate-800 border border-slate-700 rounded-lg text-xs font-medium text-slate-200 transition-colors flex items-center space-x-1.5 shadow-xs"
                   >
-                    <Download className="w-3.5 h-3.5 text-sky-400" />
+                    <Download className="w-3.5 h-3.5 text-blue-400" />
                     <span>Audit PDF</span>
                   </a>
 
@@ -237,9 +236,9 @@ export default function App() {
                     href={`/api/sessions/${sessionId}/report.json`}
                     target="_blank"
                     rel="noreferrer"
-                    className="px-3.5 py-1.5 bg-slate-850 hover:bg-slate-800 border border-slate-700/80 rounded-xl text-xs font-semibold text-slate-200 transition-all flex items-center space-x-1.5 shadow-sm hover:border-indigo-500/30"
+                    className="px-3 py-1.5 bg-[#161F30] hover:bg-slate-800 border border-slate-700 rounded-lg text-xs font-medium text-slate-200 transition-colors flex items-center space-x-1.5 shadow-xs"
                   >
-                    <FileText className="w-3.5 h-3.5 text-indigo-400" />
+                    <FileText className="w-3.5 h-3.5 text-slate-400" />
                     <span>JSON Report</span>
                   </a>
                 </div>
@@ -247,15 +246,15 @@ export default function App() {
             )}
 
             {/* Document Workspace Ribbon */}
-            <div className="bg-[#0b1120]/90 backdrop-blur-md border border-slate-800/80 rounded-2xl p-5 shadow-2xl space-y-4">
+            <div className="bg-[#111827] border border-slate-800 rounded-xl p-4 shadow-sm space-y-3">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div className="flex items-center space-x-2.5">
-                  <div className="p-1.5 bg-sky-500/10 border border-sky-500/20 rounded-lg text-sky-400">
-                    <FileCheck className="w-4 h-4" />
+                  <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-slate-300">
+                    <FileCheck className="w-4 h-4 text-blue-400" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-white tracking-tight">Financial Document Bundle</h3>
-                    <p className="text-xs text-slate-400">
+                    <h3 className="text-xs font-semibold text-white tracking-tight">Financial Document Bundle</h3>
+                    <p className="text-[11px] text-slate-400">
                       {documents.length > 0
                         ? `${documents.length} document(s) uploaded in current audit session`
                         : 'Upload payslips, statements, or invoices for consistency analysis'}
@@ -264,8 +263,8 @@ export default function App() {
                 </div>
 
                 <div className="flex items-center space-x-2">
-                  <label className="cursor-pointer px-3.5 py-2 bg-slate-850 hover:bg-slate-800 border border-slate-700/80 rounded-xl text-xs font-semibold text-slate-200 transition-all flex items-center space-x-2 shadow-sm hover:border-sky-500/40">
-                    <Upload className="w-3.5 h-3.5 text-sky-400" />
+                  <label className="cursor-pointer px-3 py-1.5 bg-[#161F30] hover:bg-slate-800 border border-slate-700 rounded-lg text-xs font-medium text-slate-200 transition-colors flex items-center space-x-1.5 shadow-xs">
+                    <Upload className="w-3.5 h-3.5 text-slate-400" />
                     <span>{isUploading ? 'Uploading...' : 'Upload PDF/Images'}</span>
                     <input
                       type="file"
@@ -281,9 +280,9 @@ export default function App() {
                     <button
                       onClick={handleRunAnalysis}
                       disabled={isAnalyzing}
-                      className="px-4 py-2 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-sky-500/25 transition-all flex items-center space-x-2 disabled:opacity-50"
+                      className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors flex items-center space-x-1.5 disabled:opacity-50"
                     >
-                      {isAnalyzing ? <Cpu className="w-4 h-4 animate-spin" /> : <PlayCircle className="w-4 h-4" />}
+                      {isAnalyzing ? <Cpu className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5 fill-current" />}
                       <span>{isAnalyzing ? 'Analyzing Pipeline...' : 'Run Analysis'}</span>
                     </button>
                   )}
@@ -292,7 +291,7 @@ export default function App() {
 
               {/* Uploaded Documents Tabs */}
               {documents.length > 0 ? (
-                <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-800/80">
+                <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-800">
                   {documents.map((doc) => {
                     const isSelected = selectedDocId === doc.doc_id;
                     const res = analysis ? analysis.documents[doc.doc_id] : null;
@@ -304,17 +303,17 @@ export default function App() {
                           setSelectedDocId(doc.doc_id);
                           setSelectedField(null);
                         }}
-                        className={`px-3.5 py-2.5 rounded-xl text-xs text-left transition-all flex items-center space-x-2.5 border ${
+                        className={`px-3 py-2 rounded-lg text-xs text-left transition-colors flex items-center space-x-2.5 border ${
                           isSelected
-                            ? 'bg-gradient-to-r from-sky-500/20 to-blue-500/10 border-sky-500/50 text-white shadow-lg shadow-sky-500/10'
-                            : 'bg-[#070b14]/70 border-slate-800/80 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                            ? 'bg-blue-600/15 border-blue-500/50 text-white'
+                            : 'bg-[#0B0F17] border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
                         }`}
                       >
-                        <FileText className={`w-4 h-4 ${isSelected ? 'text-sky-400' : 'text-slate-500'}`} />
+                        <FileText className={`w-4 h-4 ${isSelected ? 'text-blue-400' : 'text-slate-500'}`} />
                         <div>
-                          <div className="font-semibold truncate max-w-[170px]">{doc.original_filename}</div>
+                          <div className="font-medium truncate max-w-[170px]">{doc.original_filename}</div>
                           {res && (
-                            <div className="text-[10px] uppercase font-mono text-slate-500 font-medium">
+                            <div className="text-[10px] uppercase font-mono text-slate-500">
                               {res.doc_type} • {res.page_count} pg
                             </div>
                           )}
@@ -324,21 +323,21 @@ export default function App() {
                   })}
                 </div>
               ) : (
-                <div className="border-2 border-dashed border-slate-800/90 rounded-2xl p-10 text-center space-y-3 bg-[#070b14]/40">
-                  <div className="w-12 h-12 mx-auto rounded-2xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 mb-2">
-                    <Upload className="w-6 h-6" />
+                <div className="border border-dashed border-slate-800 rounded-xl p-8 text-center space-y-2.5 bg-[#0B0F17]">
+                  <div className="w-10 h-10 mx-auto rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 mb-1">
+                    <Upload className="w-5 h-5 text-slate-400" />
                   </div>
-                  <h4 className="text-sm font-bold text-white">Upload Financial Documents</h4>
-                  <p className="text-xs text-slate-400 max-w-sm mx-auto">
+                  <h4 className="text-xs font-semibold text-white">Upload Financial Documents</h4>
+                  <p className="text-[11px] text-slate-400 max-w-sm mx-auto">
                     Supports payslips, bank statements, tax invoices, and receipts (PDF, PNG, JPEG up to 10 MB).
                   </p>
-                  <div className="pt-2">
+                  <div className="pt-1">
                     <button
                       onClick={handleRunDemo}
                       disabled={isAnalyzing}
-                      className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold text-sky-300 bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/30 transition-all"
+                      className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-blue-400 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/30 transition-colors"
                     >
-                      <span>Or launch live synthesized demonstration</span>
+                      <span>Or launch synthesized sample scenario</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -349,7 +348,7 @@ export default function App() {
             {/* Analysis Results View */}
             {activeDocResult && sessionId && (
               <div className="space-y-6">
-                {/* Two Column Layout: Real Interactive Document Viewer (Left) + Table/Inspector (Right) */}
+                {/* Two Column Layout: Document Viewer (Left) + Table/Inspector (Right) */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                   {/* Left Column: Interactive Document Canvas */}
                   <div className="lg:col-span-7">
@@ -393,8 +392,8 @@ export default function App() {
         )}
       </main>
 
-      <footer className="border-t border-slate-900 bg-[#060913] py-4 text-center text-xs text-slate-500 font-mono">
-        VeriDocs AI • Evidence-First Financial Document Intelligence Research Prototype • Zero Paid APIs • Apache-2.0 / MIT
+      <footer className="border-t border-slate-800/80 bg-[#0E131F] py-3.5 text-center text-[11px] text-slate-500 font-mono">
+        VeriDocs AI • Evidence-First Financial Document Intelligence Research Prototype • Zero Paid APIs
       </footer>
     </div>
   );
